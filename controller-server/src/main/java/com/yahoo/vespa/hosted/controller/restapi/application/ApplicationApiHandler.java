@@ -168,6 +168,7 @@ public class ApplicationApiHandler extends LoggingRequestHandler {
         if (path.matches("/application/v4/tenant-pipeline")) return tenantPipelines();
         if (path.matches("/application/v4/athensDomain")) return athenzDomains(request);
         if (path.matches("/application/v4/property")) return properties();
+        if (path.matches("/application/v4/logs")) return logs();
         if (path.matches("/application/v4/cookiefreshness")) return cookieFreshness(request);
         if (path.matches("/application/v4/tenant/{tenant}")) return tenant(path.get("tenant"), request);
         if (path.matches("/application/v4/tenant/{tenant}/application")) return applications(path.get("tenant"), request);
@@ -309,6 +310,12 @@ public class ApplicationApiHandler extends LoggingRequestHandler {
         return new SlimeJsonResponse(slime);
     }
 
+    private HttpResponse logs() {
+        Slime slime = new Slime();
+        Cursor response = slime.setObject();
+        Cursor array = response.setArray("logs");
+        return controller.configServer().getLogs();
+    }
     private HttpResponse cookieFreshness(HttpRequest request) {
         Slime slime = new Slime();
         String passThruHeader = request.getHeader(SetBouncerPassthruHeaderFilter.BOUNCER_PASSTHRU_HEADER_FIELD);
